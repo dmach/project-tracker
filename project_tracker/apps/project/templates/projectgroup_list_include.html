@@ -1,0 +1,7 @@
+{% for project_group in project_group_list %}
+    <tr>
+      <td><a href="{% url 'project-group/detail' project_group.short %}">{{ project_group.short }}</a></td>
+      <td>{{ project_group.name }}</td>
+      <td>{{ project_group.owner }}</td>
+    </tr>
+{% endfor %}

@@ -1,0 +1,9 @@
+{% for project in project_list %}
+    <tr>
+      <td><a href="{% url 'project/detail' project_group.short project.short %}">{{ project.short }}</a></td>
+      <td>{{ project.name }}</td>
+      <td>{{ project.owner }}</td>
+      <td>{{ project.description }}</td>
+      <td>{{ project.is_closed|yesno }}</td>
+    </tr>
+{% endfor %}

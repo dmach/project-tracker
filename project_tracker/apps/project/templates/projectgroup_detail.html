@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+
+{% block content %}
+
+<h1 class="page-header">{% trans "Project Group" %}: {{ project_group }}</h1>
+
+<div class="clearfix">
+<dl class="details dl-horizontal pull-left">
+    <dt>Short</dt>
+    <dd>{{ project_group.short }}</dd>
+    <dt>Name</dt>
+    <dd>{{ project_group.name }}</dd>
+    <dt>Owner</dt>
+    <dd>{{ project_group.owner }}</dd>
+    <dt>Created</dt>
+    <dd>{{ project_group.date_created|date:"Y-m-d" }}</dd>
+    <dt>Closed</dt>
+    <dd>{{ project_group.date_closed|date:"Y-m-d" }}</dd>
+</dl>
+</div>
+
+<h3>{% trans "Projects" %}</h3>
+<table class="table table-bordered table-striped table-hover">
+  <thead>
+    <tr>
+      <th style="width: 15em;">Short</th>
+      <th stype="width: 30em;">Name</th>
+      <th style="width: 8em;">Owner</th>
+      <th>Description</th>
+      <th style="width: 8em;">Closed</th>
+    </tr>
+  </thead>
+{% include "project_list_include.html" with project_list=project_group.project_set.all %}
+</table>
+
+{% endblock %}

@@ -16,6 +16,17 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from apps.project.views import ProjectGroupListView, ProjectGroupDetailView
+from apps.project.views import ProjectDetailView
+
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
+    # project group
+    url(r'^g/$', ProjectGroupListView.as_view(), name='project-group/list'),
+    url(r'^g/(?P<slug>[-\w]+)/$', ProjectGroupDetailView.as_view(), name='project-group/detail'),
+
+    # project
+    url(r'^p/(?P<project_group>[-\w]+)/(?P<slug>[-\w]+)/$', ProjectDetailView.as_view(), name='project/detail'),
 ]
