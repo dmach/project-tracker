@@ -4,6 +4,12 @@
 
 {% block content %}
 
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'project-group/detail' project.group %}">{{ project.group }}</a></li>
+  <li class="breadcrumb-item active">{{ project.short }}</li>
+</ol>
+
 <h1 class="page-header">{% trans "Project" %}: {{ project }}</h1>
 
 <div class="clearfix">
