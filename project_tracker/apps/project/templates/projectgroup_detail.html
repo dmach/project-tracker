@@ -40,4 +40,8 @@
 {% include "project_list_include.html" with project_list=project_group.project_set.all %}
 </table>
 
+<form action="" method="get">
+    <button type="submit" class="btn btn-primary btn-lg" value="csv" name="format">Export to csv</button>
+ </form>
+
 {% endblock %}
