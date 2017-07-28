@@ -21,7 +21,7 @@ class ProjectGroupListView(ListView):
     slug_field = "short"
     template_name = "projectgroup_list.html"
     context_object_name = "project_group_list"
-    form_class = ProjectSearchForm
+    form_class = ProjectGroupSearchForm
 
     def render_to_response(self, context, **response_kwargs):
         """
@@ -39,7 +39,10 @@ class ProjectGroupListView(ListView):
                 writer.writerow([project.short, project.name, project.owner])
             return response
         elif self.request.GET.get('search', ''):
-            pass
+            x = ProjectGroupSearchForm(self.request.GET)
+            projects = self.get_queryset()
+            query = x.get_query(projects)
+            return super(ProjectGroupListView, self).render_to_response(context, **response_kwargs)
         else:
             return super(ProjectGroupListView, self).render_to_response(context, **response_kwargs)
 
@@ -102,6 +105,12 @@ class ProjectDetailView(DetailView):
             for item in projects:
                 writer.writerow([item.short, item.name, item.owner, item.description, item.is_closed])
             return response
+        elif self.request.GET.get('search', ''):
+            x = ProjectPhaseSearchForm(self.request.GET)
+            group = self.get_object()
+            projects = group.project_set.all()
+            query = x.get_query(projects)
+            return super(ProjectDetailView, self).render_to_response(context, **response_kwargs)
         else:
             return super(ProjectDetailView, self).render_to_response(context, **response_kwargs)
 
