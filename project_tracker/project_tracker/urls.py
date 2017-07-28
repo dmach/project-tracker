@@ -18,10 +18,11 @@ from django.contrib import admin
 
 from apps.dashboard.views import DashboardDetailView
 from apps.project.views import ProjectGroupListView, ProjectGroupDetailView
-from apps.project.views import ProjectDetailView
+from apps.project.views import ProjectDetailView, main
 
 
 urlpatterns = [
+    url(r'^$', main, name='home'),
     url(r'^admin/', admin.site.urls),
 
     # project group
