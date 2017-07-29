@@ -6,11 +6,12 @@ from __future__ import unicode_literals
 from django.views.generic import ListView, DetailView
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.db.models import Q
 
 from .models import ProjectGroup
 from .models import Project
 
-from .forms import ProjectGroupSearchForm, ProjectSearchForm, ProjectPhaseSearchForm
+from .forms import ProjectGroupSearchForm, ProjectSearchForm
 
 import csv, time
 
@@ -22,6 +23,16 @@ class ProjectGroupListView(ListView):
     template_name = "projectgroup_list.html"
     context_object_name = "project_group_list"
     form_class = ProjectGroupSearchForm
+
+    def get_queryset(self):
+        form = self.form_class(self.request.GET)
+        qs = super(ProjectGroupListView, self).get_queryset()
+        if form.is_valid():
+            return qs.filter(
+                Q(short__icontains=form.cleaned_data["search"]) |
+                Q(name__icontains=form.cleaned_data["search"])
+            )
+        return qs
 
     def render_to_response(self, context, **response_kwargs):
         """
@@ -38,11 +49,6 @@ class ProjectGroupListView(ListView):
             for project in group_list:
                 writer.writerow([project.short, project.name, project.owner])
             return response
-        elif self.request.GET.get('search', ''):
-            x = ProjectGroupSearchForm(self.request.GET)
-            projects = self.get_queryset()
-            query = x.get_query(projects)
-            return super(ProjectGroupListView, self).render_to_response(context, **response_kwargs)
         else:
             return super(ProjectGroupListView, self).render_to_response(context, **response_kwargs)
 
@@ -71,12 +77,6 @@ class ProjectGroupDetailView(DetailView):
             for item in projects:
                 writer.writerow([item.short, item.name, item.owner, item.description, item.is_closed])
             return response
-        elif self.request.GET.get('search', ''):
-            x = ProjectSearchForm(self.request.GET)
-            group = self.get_object()
-            projects = group.project_set.all()
-            query = x.get_query(projects)
-            return super(ProjectGroupDetailView, self).render_to_response(context, **response_kwargs)
         else:
             return super(ProjectGroupDetailView, self).render_to_response(context, **response_kwargs)
 
@@ -87,7 +87,7 @@ class ProjectDetailView(DetailView):
     slug_field = "short"
     template_name = "project_detail.html"
     context_object_name = "project"
-    form_class = ProjectPhaseSearchForm
+    form_class = ProjectSearchForm
 
     def render_to_response(self, context, **response_kwargs):
         """
@@ -98,6 +98,7 @@ class ProjectDetailView(DetailView):
         if self.request.GET.get('format', '') == 'csv':
             response = HttpResponse(content_type='text/csv')
             group = self.get_object()
+            print(type(group))
             response['Content-Disposition'] = 'attachment; filename="%s-%s.csv"' % (group.short, time.strftime("%Y-%m-%d"))
             projects = group.project_set.all()
             writer = csv.writer(response)
@@ -105,12 +106,6 @@ class ProjectDetailView(DetailView):
             for item in projects:
                 writer.writerow([item.short, item.name, item.owner, item.description, item.is_closed])
             return response
-        elif self.request.GET.get('search', ''):
-            x = ProjectPhaseSearchForm(self.request.GET)
-            group = self.get_object()
-            projects = group.project_set.all()
-            query = x.get_query(projects)
-            return super(ProjectDetailView, self).render_to_response(context, **response_kwargs)
         else:
             return super(ProjectDetailView, self).render_to_response(context, **response_kwargs)
 
