@@ -61,6 +61,17 @@ class ProjectGroupDetailView(DetailView):
     context_object_name = "project_group"
     form_class = ProjectGroupSearchForm
 
+    def get_object(self):
+        form = self.form_class(self.request.GET)
+        proj = super(ProjectGroupDetailView, self).get_object()
+        qs = proj.project_set.all()
+        if form.is_valid():
+            return qs.filter(
+                Q(short__icontains=form.cleaned_data["search"]) |
+                Q(name__icontains=form.cleaned_data["search"])
+            )
+        return proj
+
     def render_to_response(self, context, **response_kwargs):
         """
         Creates a CSV response if requested, otherwise returns the default
