@@ -12,7 +12,7 @@
 <form style="float: right;">
     <div id="custom-search-input">
         <div class="input-group col-md-12">
-            <input type="text" name="search" class="form-control input-lg" placeholder="Search..." />
+            <input type="text" name="search" class="form-control input-lg" value="{{ request.GET.search }}" placeholder="Search..."/>
             <span class="input-group-btn">
                 <button class="btn btn-info btn-lg" type="submit">
                     <i class="glyphicon glyphicon-search"></i>
