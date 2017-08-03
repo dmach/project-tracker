@@ -24,7 +24,7 @@ class ProjectGroupListView(ListView):
     context_object_name = "project_group_list"
     form_class = ProjectGroupSearchForm
 
-    def get_queryset(self):
+o    def get_queryset(self):
         form = self.form_class(self.request.GET)
         qs = super(ProjectGroupListView, self).get_queryset()
         if form.is_valid():
@@ -61,16 +61,19 @@ class ProjectGroupDetailView(DetailView):
     context_object_name = "project_group"
     form_class = ProjectGroupSearchForm
 
-    def get_object(self):
+    def get_context_data(self, **kwargs):
+        context = super(ProjectGroupDetailView, self).get_context_data(**kwargs)
+        obj = self.get_object()
         form = self.form_class(self.request.GET)
-        proj = super(ProjectGroupDetailView, self).get_object()
-        qs = proj.project_set.all()
+        projects = obj.project_set.all()
         if form.is_valid():
-            return qs.filter(
+            projects = projects.filter(
                 Q(short__icontains=form.cleaned_data["search"]) |
-                Q(name__icontains=form.cleaned_data["search"])
+                Q(name__icontains=form.cleaned_data["search"]) |
+                Q(description__icontains=form.cleaned_data["search"])
             )
-        return proj
+        context["projects"] = projects
+        return context
 
     def render_to_response(self, context, **response_kwargs):
         """
@@ -119,6 +122,7 @@ class ProjectDetailView(DetailView):
             return response
         else:
             return super(ProjectDetailView, self).render_to_response(context, **response_kwargs)
+
 
 def main(request):
     return render(request, 'main.html')
