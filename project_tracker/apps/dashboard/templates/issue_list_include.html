@@ -1,0 +1,34 @@
+{% for issue in issues %}
+    <tr>
+      <td style="padding-left: {{ indent }}em;">
+        {% if issue.url %}<a href="{{ issue.url }}" style="font-family: monospace;">{% endif %}<strong>{% if issue.issue_ref %}{{ issue.issue_ref }}{% else %}{{ issue.issue_id }}{% endif %}</strong>{% if issue.url %}</a>{% endif %}
+        &nbsp;
+        {{ issue.summary }}
+        {% for tag, color in issue.tags_dict.items %}
+        <span class="label label-default"{% if color %} style="background-color: {{ color }};"{% endif %}>{{ tag }}</span>&nbsp;
+        {% endfor %}
+      </td>
+      <td class="{{ issue.bootstrap_bg_class }}">{{ issue.status }}</td>
+      <td>{{ issue.assignee }}</td>
+      <td>{{ issue.reporter }}</td>
+      <td>{{ issue.project }} / {{ issue.component }}</td>
+
+      <td{% if issue.color_status.date_created %} style="background-color: {{ issue.color_status.date_created }};"{% endif %}>{{ issue.get_date_created_display }}</td>
+      <td{% if issue.color_status.date_updated %} style="background-color: {{ issue.color_status.date_updated }};"{% endif %}>{{ issue.get_date_updated_display }}</td>
+      <td>{% if issue.date_closed %}{{ issue.get_date_closed_display }}{% endif %}</td>
+
+      {% comment %}
+      <td{% if issue.color_status.date_created %} style="background-color: {{ issue.color_status.date_created }};"{% endif %}>{{ issue.get_date_created_display }}<br /><span style="font-size: 70%;">({{ issue.date_created|timesince }})</span></td>
+      <td{% if issue.color_status.date_updated %} style="background-color: {{ issue.color_status.date_updated }};"{% endif %}>{{ issue.get_date_updated_display }}<br /><span style="font-size: 70%;">({{ issue.date_updated|timesince }})</span></td>
+      <td>{% if issue.date_closed %}{{ issue.get_date_closed_display }}<br /><span style="font-size: 70%;">({{ issue.date_closed|timesince }})</span>{% endif %}</td>
+
+
+      <td{% if issue.color_status.created %} style="background-color: {{ issue.color_status.created }};"{% endif %}>{{ issue.created|date:"Y-m-d" }}<br /><span style="font-size: 70%;">({{ issue.created|timesince }})</span></td>
+      <td{% if issue.color_status.updated %} style="background-color: {{ issue.color_status.updated }};"{% endif %}>{{ issue.updated|date:"Y-m-d" }}<br /><span style="font-size: 70%;">({{ issue.updated|timesince }})</span></td>
+      <td>{% if issue.closed %}{{ issue.closed|date:"Y-m-d" }}<br /><span style="font-size: 70%;">({{ issue.updated|timesince }})</span>{% endif %}</td>
+      {% endcomment %}
+    </tr>
+{% if issue.children_count %}
+    {% include "issue_list_include.html" with issues=issue.children.all indent=indent|add:"2" %}
+{% endif %}
+{% endfor %}

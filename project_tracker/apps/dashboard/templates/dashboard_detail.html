@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+
+{% block content %}
+
+<h1 class="page-header">{% trans "Dashboard" %}: {{ dashboard.name }}</h1>
+
+<div class="clearfix">
+<dl class="details dl-horizontal pull-left">
+    <dt>Name</dt>
+    <dd>{{ dashboard.name }}</dd>
+    <dt>Owner</dt>
+    <dd>{{ dashboard.owner }}</dd>
+    <dt>Created</dt>
+    <dd>{{ dashboard.date_created|date:"Y-m-d" }}</dd>
+    <dt>Updated</dt>
+    <dd>{{ dashboard.date_updated|date:"Y-m-d" }}</dd>
+    <dt>Closed</dt>
+    <dd>{{ dashboard.date_closed|date:"Y-m-d" }}</dd>
+    <dt>Synced</dt>
+    <dd>{{ dashboard.date_synced|date:"Y-m-d" }}</dd>
+</dl>
+</div>
+
+<h3>{% trans "Issues" %}</h3>
+<table class="table table-bordered table-striped table-hover">
+  <thead>
+    <tr>
+      <th>ID, Summary, Tags</th>
+      <th style="width: 8em;">Status</th>
+      <th style="width: 10em;">Assignee</th>
+      <th style="width: 10em;">Reporter</th>
+      <th style="width: 15em;">Project / Component</th>
+      <th style="width: 9em;">Created</th>
+      <th style="width: 9em;">Updated</th>
+      <th style="width: 9em;">Closed</th>
+    </tr>
+  </thead>
+{% include "issue_list_include.html" with issues=issues indent=1 %}
+</table>
+
+{% endblock %}

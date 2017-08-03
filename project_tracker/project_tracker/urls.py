@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from apps.dashboard.views import DashboardDetailView
 from apps.project.views import ProjectGroupListView, ProjectGroupDetailView
 from apps.project.views import ProjectDetailView
 
@@ -29,4 +30,8 @@ urlpatterns = [
 
     # project
     url(r'^p/(?P<project_group>[-\w]+)/(?P<slug>[-\w]+)/$', ProjectDetailView.as_view(), name='project/detail'),
+
+    # dashboard
+    url(r'^d/(?P<project_group>[-\w]+)/(?P<project>[-\w]+)/(?P<slug>[-\w]+)/$', DashboardDetailView.as_view(), {"state": "open"}, name='dashboard/detail'),
+    url(r'^d/(?P<project_group>[-\w]+)/(?P<project>[-\w]+)/(?P<slug>[-\w]+)/all/$', DashboardDetailView.as_view(), {"state": "all"}, name='dashboard/detail/all'),
 ]
